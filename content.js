@@ -55,8 +55,57 @@ if (location.pathname.startsWith("/watch")) {
     observer.observe(document, { childList: true, subtree: true });
 }
 
-// // Manual re-run on click
-// document.addEventListener("click", () => {
-//     console.log("Manual re-check triggered by click.");
-//     replaceVisibleDate();
-// });
+// ==============================
+// Hide Shorts on YouTube Home
+// ==============================
+
+function hideShorts() {
+    // 1. Remove full "Shorts" shelves
+    const shortsShelves = document.querySelectorAll(
+        'ytd-rich-section-renderer'
+    );
+
+    shortsShelves.forEach(shelf => {
+        const title = shelf.querySelector('#title');
+        if (title && title.textContent.trim().toLowerCase() === 'shorts') {
+            shelf.remove();
+            console.log("Removed Shorts shelf");
+        }
+    });
+
+    // 2. Remove individual Shorts tiles
+    const videoLinks = document.querySelectorAll('a[href^="/shorts/"]');
+
+    videoLinks.forEach(link => {
+        const tile = link.closest('ytd-rich-item-renderer');
+        if (tile) {
+            tile.remove();
+            console.log("Removed Shorts tile");
+        }
+    });
+}
+
+// Run only on the homepage
+if (location.pathname === "/") {
+    const shortsObserver = new MutationObserver(() => {
+        hideShorts();
+    });
+
+    shortsObserver.observe(document, {
+        childList: true,
+        subtree: true
+    });
+
+    // Run once immediately in case content is already there
+    hideShorts();
+}
+
+
+// document.addEventListener(
+//     "click",
+//     function () {
+//         console.log("Click detected. Running function...");
+//         updateUploadDate();
+//     },
+//     { once: true } // Only runs the first click after page load
+// );
