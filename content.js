@@ -100,6 +100,35 @@ if (location.pathname === "/") {
     hideShorts();
 }
 
+function hideWatchPageShorts() {
+    const shortsLinks = document.querySelectorAll(
+        'ytd-reel-shelf-renderer'
+    );
+
+    shortsLinks.forEach(link => {
+        const compactItem = link.closest('ytd-reel-shelf-renderer');
+        if (compactItem) {
+            compactItem.remove();
+            console.log("Removed Shorts from watch sidebar");
+        }
+    });
+}
+
+// Run on watch pages
+if (location.pathname.startsWith("/watch")) {
+    const watchShortsObserver = new MutationObserver(() => {
+        hideWatchPageShorts();
+    });
+
+    watchShortsObserver.observe(document, {
+        childList: true,
+        subtree: true
+    });
+
+    // Run once immediately
+    hideWatchPageShorts();
+}
+
 
 // document.addEventListener(
 //     "click",
