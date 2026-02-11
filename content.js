@@ -101,15 +101,26 @@ if (location.pathname === "/") {
 }
 
 function hideWatchPageShorts() {
-    const shortsLinks = document.querySelectorAll(
-        'ytd-reel-shelf-renderer'
+    const shortsShelves = document.querySelectorAll(
+        'yt-horizontal-list-renderer'
     );
 
-    shortsLinks.forEach(link => {
-        const compactItem = link.closest('ytd-reel-shelf-renderer');
-        if (compactItem) {
-            compactItem.remove();
-            console.log("Removed Shorts from watch sidebar");
+    shortsShelves.forEach(shelf => {
+        const title = shelf.querySelector('#title');
+        if (title && title.textContent.trim().toLowerCase() === 'shorts') {
+            shelf.remove();
+            console.log("Removed Shorts shelf");
+        }
+    });
+
+    // 2. Remove individual Shorts tiles
+    const videoLinks = document.querySelectorAll('a[href^="/shorts/"]');
+
+    videoLinks.forEach(link => {
+        const tile = link.closest('yt-horizontal-list-renderer');
+        if (tile) {
+            tile.remove();
+            console.log("Removed Shorts tile");
         }
     });
 }
